@@ -3,6 +3,7 @@ import os
 import random
 import tensorflow as tf
 from scipy import misc
+import glob
 
 
 def get_images(paths, labels, nb_samples=None, shuffle=True):
@@ -101,7 +102,34 @@ class DataGenerator(object):
 
     #############################
     #### YOUR CODE GOES HERE ####
-    pass
+    # Initialise array for storage
+    all_image_batches = np.zeros(
+      (batch_size, self.num_samples_per_class, self.num_classes, 784)
+    )
+
+    all_label_batches = np.zeros(
+      (batch_size, self.num_samples_per_class, self.num_classes, self.num_classes)
+    )
+
+    # TODO: SAMPLE SAME FOLDERS FOR ALL BATCH? OR SAMPLE DIFFERENT FOLDERS FOR EACH BATCH?
+    # TODO: ONE-HOT LABEL FOR ALL CLASSES OR LIMITED TO self.classes?
+    for b in range(batch_size):
+      sampled_paths = np.random.choice(folders, self.num_classes)
+      images_labels = get_images(
+        sampled_paths, np.eye(self.num_classes), self.num_samples_per_class, False)
+
+      for n in range(self.num_classes):
+        for k in range(self.num_samples_per_class):
+          index = n * self.num_samples_per_class + k
+          all_image_batches[b, k, n, :] = image_file_to_array(images_labels[index][1], 784)
+          all_label_batches[b, k, n, :] = images_labels[index][0]
     #############################
 
     return all_image_batches, all_label_batches
+
+
+if __name__ == '__main__':
+  data_generator = DataGenerator(num_classes=5,
+                                 num_samples_per_class=2,
+                                 config={'data_folder': '/home/eugene/_DATASETS/omniglot_resized'})
+  data_generator.sample_batch('train', 16)

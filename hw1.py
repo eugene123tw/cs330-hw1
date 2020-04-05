@@ -16,6 +16,11 @@ flags.DEFINE_integer('num_samples', 1,
 flags.DEFINE_integer('meta_batch_size', 16,
                      'Number of N-way classification tasks per batch')
 
+flags.DEFINE_string(
+  name = 'data_root',
+  default= '/home/eugene/_DATASETS/omniglot_resized',
+  help= 'data folder root'
+)
 
 def loss_function(preds, labels):
   """
@@ -63,7 +68,10 @@ labels = tf.placeholder(tf.float32, shape=(
   None, FLAGS.num_samples + 1, FLAGS.num_classes, FLAGS.num_classes))
 
 data_generator = DataGenerator(
-  FLAGS.num_classes, FLAGS.num_samples + 1)
+  FLAGS.num_classes,
+  FLAGS.num_samples + 1,
+  {'data_folder': FLAGS.data_root}
+)
 
 o = MANN(FLAGS.num_classes, FLAGS.num_samples + 1)
 out = o(ims, labels)
