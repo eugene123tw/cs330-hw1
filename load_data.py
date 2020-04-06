@@ -111,9 +111,7 @@ class DataGenerator(object):
       (batch_size, self.num_samples_per_class, self.num_classes, self.num_classes)
     )
 
-    # TODO: SAMPLE SAME FOLDERS FOR ALL BATCH? OR SAMPLE DIFFERENT FOLDERS FOR EACH BATCH?
-    # TODO: ONE-HOT LABEL FOR ALL CLASSES OR LIMITED TO self.classes?
-    for b in range(batch_size):
+    for b in range(batch_size):  # sample mini batch of tasks
       sampled_paths = np.random.choice(folders, self.num_classes)
       images_labels = get_images(
         sampled_paths, np.eye(self.num_classes), self.num_samples_per_class, False)
